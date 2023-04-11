@@ -732,7 +732,7 @@
           <div class="sent-message">Your message has been sent. Thank you!</div>
         </div>
         <div class="text-center"><button type="submit">Send Message</button></div>
-        <div class="container_msg"></div>
+        <div class="container_message">--Smile&#128526;--</div>
       </form>
 
     </div>
@@ -780,7 +780,7 @@
 }).then(
     message => alert("sent successfully")
 ).then(
-    document.querySelector(".container_msg").textContent =  `Your message has been sent. Thank you ${name.value} !!!`,
+    document.querySelector(".container_message").textContent =  `Your message has been sent. Thank you ${name.value} !!!`,
     name.value ="",email.value ="", subject.value ="",message.value = ""
  
   //   location.href = "https://www.youtube.com/watch?v=sGQSz22U8VM&t=2s&ab_channel=EasyTutorials"

@@ -8,11 +8,12 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
-.container_msg{
+.container_message{
   font-family: "Cascadia Code", sans-serif;
   font-size: 27px;
   text-align: center;
   color:#0DBBDF;
+  margin-top: 20px;
 }
 
 
