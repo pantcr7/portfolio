@@ -8,6 +8,14 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
+.container_msg{
+  font-family: "Cascadia Code", sans-serif;
+  font-size: 27px;
+  text-align: center;
+  color:#0DBBDF;
+}
+
+
 body {
   font-family: "Open Sans", sans-serif;
   background-color: #040404;
@@ -27,20 +35,20 @@ body::before {
   height: 100vh;
   z-index: -1;
 }
-.download{
+.hireme{
   background-color: transparent; /* Green */
-  border: 1px solid #18d26e;
+  border: 1px solid #0DBBDF;
   margin-top: 2em;
-  color: rgb(248, 244, 244);
+  color:#0DBBDF;
   padding: 11px 22px;
   text-align: center;
   border-radius:30px;
   font-size: 16px;
   transition: 4s ease-in-out;
 }
-.download:hover{
-  background-color: #18d26e;
-  color:black;
+.hireme:hover{
+  background-color: #0DBBDF;
+  color: rgb(248, 244, 244);
 }
 
 @media (min-width: 1024px) {
@@ -173,7 +181,7 @@ h6 {
 }
 
 #header.header-top .social-links,
-#header.header-top .myresume,
+#header.header-top .hire,
 #header.header-top h2 {
   display: none;
 }

@@ -4,6 +4,7 @@
 <head>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E98R9JNZLJ"></script>
+<script src="assets/js/custom.js" defer></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -75,12 +76,15 @@
         <a href="https://www.linkedin.com/in/prasant-pant-062882104/" class="linkedin"><i class="bi bi-linkedin"></i></a>
         <a href="https://github.com/pantcr7" class="linkedin"><i class="bi bi-github"></i></a>
       </div>
-      
-      <div class = "myresume">
-      <a href="/assets/Resume.pdf" download>
-        <button class="download">Download Resume</button>
-      </a>
-    </div>
+
+       
+
+      <!-- <div id = "hire" class = "hire">
+        <a href="#contact" >
+          <button class="hireme">Hire Me</button>
+        </a>
+    </div> -->
+
     </div>
   </header><!-- End Header -->
 
@@ -674,7 +678,7 @@
           <div class="info-box">
             <i class="bx bx-map"></i>
             <h3>My Address</h3>
-            <p>A108 Adam Street, New York, NY 535022</p>
+            <p>Chatri-02, Kalayanpur Municipality, Siraha, Nepal</p>
           </div>
         </div>
 
@@ -683,11 +687,10 @@
             <i class="bx bx-share-alt"></i>
             <h3>Social Profiles</h3>
             <div class="social-links">
-              <a href="#" class="twitter"><i class="bi bi-twitter"></i></a>
-              <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-              <a href="#" class="instagram"><i class="bi bi-instagram"></i></a>
-              <a href="#" class="google-plus"><i class="bi bi-skype"></i></a>
-              <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+              <a href="https://twitter.com/pant_prasant" class="twitter"><i class="bi bi-twitter"></i></a>
+              <a href="https://www.facebook.com/prasant.pant" class="facebook"><i class="bi bi-facebook"></i></a>
+              <a href="https://www.instagram.com/pantprasant/" class="instagram"><i class="bi bi-instagram"></i></a>
+              <a href="https://www.linkedin.com/in/prasant-pant-062882104/" class="linkedin"><i class="bi bi-linkedin"></i></a>
             </div>
           </div>
         </div>
@@ -696,19 +699,19 @@
           <div class="info-box">
             <i class="bx bx-envelope"></i>
             <h3>Email Me</h3>
-            <p>contact@example.com</p>
+            <p>prasantpant141@gmail.com</p>
           </div>
         </div>
         <div class="col-md-6 mt-4 d-flex align-items-stretch">
           <div class="info-box">
             <i class="bx bx-phone-call"></i>
             <h3>Call Me</h3>
-            <p>+1 5589 55488 55</p>
+            <p>+977 9862102155</p>
           </div>
         </div>
       </div>
 
-      <form action="forms/contact.php" method="post" role="form" class="php-email-form mt-4">
+      <form action="" method="post" role="form" class="php-email-form mt-4" id ="form_contact">
         <div class="row">
           <div class="col-md-6 form-group">
             <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
@@ -721,14 +724,15 @@
           <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
         </div>
         <div class="form-group mt-3">
-          <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+          <textarea class="form-control" name="message" rows="5" placeholder="Message" id = "message"required></textarea>
         </div>
         <div class="my-3">
           <div class="loading">Loading</div>
-          <div class="error-message"></div>
+          <!-- <div class="error-message"></div> -->
           <div class="sent-message">Your message has been sent. Thank you!</div>
         </div>
         <div class="text-center"><button type="submit">Send Message</button></div>
+        <div class="container_msg"></div>
       </form>
 
     </div>
@@ -753,6 +757,41 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+
+  <script src="https://smtpjs.com/v3/smtp.js"></script>
+<script>
+  (function(){
+    "use strict"
+    const form = document.querySelector("#form_contact");
+
+    const  sendMsg = (e) =>{
+        e.preventDefault();
+    const name = document.querySelector("#name");
+    const email = document.querySelector("#email");
+    const subject = document.querySelector("#subject");
+    const message1 = document.querySelector("#message");
+    
+    Email.send({
+    SecureToken : "fd6d1ec0-d91d-48b3-a103-c47af93c1394",
+    From : 'prasantpant141@gmail.com',
+    To: 'prasantpant141@gmail.com',
+    Subject : "Contact Form",
+    Body : "Name: "+name.value +"<br>Email: "+email.value + "<br>subject: "+subject.value + "<br>Message: "+message1.value
+}).then(
+    message => alert("sent successfully")
+).then(
+    document.querySelector(".container_msg").textContent =  `Your message has been sent. Thank you ${name.value} !!!`,
+    name.value ="",email.value ="", subject.value ="",message.value = ""
+ 
+  //   location.href = "https://www.youtube.com/watch?v=sGQSz22U8VM&t=2s&ab_channel=EasyTutorials"
+ )
+
+    }
+ 
+
+form.addEventListener("submit", sendMsg);
+})();
+</script>
 
 </body>
 
