@@ -8,13 +8,7 @@
 /*--------------------------------------------------------------
 # General
 --------------------------------------------------------------*/
-.container_message{
-  font-family: "Cascadia Code", sans-serif;
-  font-size: 27px;
-  text-align: center;
-  color:#0DBBDF;
-  margin-top: 20px;
-}
+
 
 
 body {
@@ -36,6 +30,16 @@ body::before {
   height: 100vh;
   z-index: -1;
 }
+
+
+.container_message{
+  font-family: "Cascadia Code", sans-serif;
+  font-size: 27px;
+  text-align: center;
+  color:#0DBBDF;
+  margin-top: 20px;
+}
+
 .hireme{
   background-color: transparent; /* Green */
   border: 1px solid #0DBBDF;
