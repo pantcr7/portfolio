@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Developer | Professional Profile</title>
+    <meta name="description" content="Fast-paced, data-driven animated personal profile showcasing elite development skills, projects, and professional achievements.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --background: hsl(220, 40%, 3%);
+            --foreground: hsl(180, 100%, 95%);
+            --card: hsl(220, 30%, 8%);
+            --primary: hsl(188, 95%, 52%);
+            --secondary: hsl(280, 70%, 55%);
+            --muted-foreground: hsl(180, 30%, 65%);
+            --border: hsl(220, 30%, 15%);
+        }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--background); color: var(--foreground); overflow-x: hidden; line-height: 1.6; }
+        .hud-grid { background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px); background-size: 50px 50px; }
+        .scan-line { position: relative; overflow: hidden; }
+        .scan-line::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 0%, hsla(188, 95%, 52%, 0.1) 50%, transparent 100%); animation: scan 4s linear infinite; pointer-events: none; }
+        @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+        .text-glow { text-shadow: 0 0 20px hsla(188, 95%, 52%, 0.5), 0 0 40px hsla(188, 95%, 52%, 0.3); }
+        @keyframes pulse-glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes slide-in { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        .animate-slide-in { animation: slide-in 0.6s ease-out; }
+        .animate-bounce { animation: bounce 2s ease-in-out infinite; }
+        #particleCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.4; }
+        section { position: relative; z-index: 1; padding: 6rem 1.5rem; }
+        .container { max-width: 1280px; margin: 0 auto; }
+        .hero { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
+        .hero-corner-top-left, .hero-corner-top-right, .hero-corner-bottom { position: absolute; font-family: 'Courier New', monospace; font-size: 0.875rem; }
+        .hero-corner-top-left { top: 2rem; left: 2rem; }
+        .hero-corner-top-right { top: 2rem; right: 2rem; text-align: right; }
+        .hero-corner-bottom { bottom: 2rem; right: 2rem; text-align: right; }
+        .status-dot { width: 0.5rem; height: 0.5rem; background: var(--primary); border-radius: 50%; display: inline-block; margin-right: 0.5rem; }
+        .badge { display: inline-block; padding: 0.5rem 1rem; border: 1px solid hsla(188, 95%, 52%, 0.3); border-radius: 0.5rem; background: hsla(188, 95%, 52%, 0.05); backdrop-filter: blur(10px); color: var(--primary); font-family: 'Courier New', monospace; font-size: 0.875rem; margin-bottom: 1rem; }
+        h1 { font-size: clamp(3rem, 8vw, 6rem); font-weight: 700; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--primary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        h2 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; margin-bottom: 1rem; }
+        h3 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .subtitle { font-size: clamp(1rem, 2vw, 1.5rem); color: var(--muted-foreground); font-family: 'Courier New', monospace; margin-bottom: 2rem; }
+        .info-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; font-family: 'Courier New', monospace; font-size: 0.875rem; }
+        .pill { padding: 0.5rem 1rem; border: 1px solid hsla(188, 95%, 52%, 0.3); border-radius: 0.5rem; background: hsla(220, 30%, 8%, 0.5); backdrop-filter: blur(10px); }
+        .pill span:first-child { color: var(--muted-foreground); }
+        .pill span:last-child { color: var(--primary); margin-left: 0.5rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 4rem; }
+        .stat-card { position: relative; padding: 1.5rem; border: 1px solid hsla(188, 95%, 52%, 0.3); border-radius: 0.75rem; background: hsla(220, 30%, 8%, 0.5); backdrop-filter: blur(10px); text-align: center; transition: all 0.3s ease; }
+        .stat-card:hover { border-color: var(--primary); box-shadow: 0 0 30px hsla(188, 95%, 52%, 0.3); }
+        .stat-value { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
+        .stat-label { font-family: 'Courier New', monospace; font-size: 0.875rem; color: var(--muted-foreground); }
+        .progress-bar { height: 0.25rem; background: var(--border); border-radius: 0.25rem; overflow: hidden; margin-top: 1rem; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; transition: width 1s ease-out; }
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 4rem; }
+        .skill-card { position: relative; padding: 1.5rem; border: 1px solid hsla(280, 70%, 55%, 0.3); border-radius: 0.75rem; background: hsla(220, 30%, 8%, 0.5); backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .skill-card:hover { border-color: var(--secondary); box-shadow: 0 0 30px hsla(280, 70%, 55%, 0.3); }
+        .skill-header { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .skill-icon { padding: 0.75rem; border: 1px solid hsla(280, 70%, 55%, 0.3); border-radius: 0.5rem; background: hsla(280, 70%, 55%, 0.1); }
+        .skill-progress { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; }
+        .skill-progress-bar { flex: 1; height: 0.5rem; background: var(--border); border-radius: 0.25rem; overflow: hidden; }
+        .skill-progress-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0%; transition: width 1s ease-out; }
+        .skill-percent { color: var(--secondary); font-family: 'Courier New', monospace; font-weight: 700; min-width: 3rem; }
+        .tech-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .tech-tag { padding: 0.25rem 0.75rem; font-size: 0.75rem; font-family: 'Courier New', monospace; border: 1px solid hsla(188, 95%, 52%, 0.3); border-radius: 0.25rem; background: hsla(188, 95%, 52%, 0.05); color: var(--primary); }
+        .timeline { position: relative; max-width: 900px; margin: 4rem auto 0; }
+        .timeline::before { content: ''; position: absolute; left: 2rem; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--primary), var(--secondary), var(--primary)); }
+        .timeline-item { position: relative; padding-left: 5rem; margin-bottom: 3rem; }
+        .timeline-dot { position: absolute; left: 1.4rem; top: 0; width: 1rem; height: 1rem; border: 2px solid var(--primary); background: var(--background); border-radius: 50%; }
+        .exp-card { padding: 1.5rem; border: 1px solid hsla(188, 95%, 52%, 0.3); border-radius: 0.75rem; background: hsla(220, 30%, 8%, 0.5); backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .exp-card:hover { border-color: var(--primary); box-shadow: 0 0 30px hsla(188, 95%, 52%, 0.3); }
+        .exp-year { font-family: 'Courier New', monospace; font-size: 0.875rem; color: var(--primary); margin-bottom: 0.5rem; }
+        .exp-company { color: var(--secondary); font-family: 'Courier New', monospace; margin-bottom: 1rem; }
+        .exp-description { color: var(--muted-foreground); margin-bottom: 1rem; }
+        .achievements { list-style: none; }
+        .achievements li { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: var(--muted-foreground); margin-bottom: 0.5rem; }
+        .achievements li::before { content: ''; width: 0.375rem; height: 0.375rem; background: var(--secondary); border-radius: 50%; }
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 4rem; }
+        .project-card { position: relative; padding: 1.5rem; border: 1px solid hsla(280, 70%, 55%, 0.3); border-radius: 0.75rem; background: hsla(220, 30%, 8%, 0.5); backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .project-card:hover { border-color: var(--secondary); box-shadow: 0 0 30px hsla(280, 70%, 55%, 0.3); }
+        .project-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .status-badge { display: flex; align-items: center; gap: 0.5rem; font-family: 'Courier New', monospace; font-size: 0.75rem; color: var(--muted-foreground); }
+        .project-description { color: var(--muted-foreground); margin-bottom: 1rem; }
+        .project-impact { padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.875rem; }
+        .project-impact span:first-child { color: var(--muted-foreground); }
+        .project-impact span:last-child { color: var(--primary); font-family: 'Courier New', monospace; font-weight: 700; }
+        .contact-content { max-width: 800px; margin: 0 auto; text-align: center; }
+        .social-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin: 3rem 0; }
+        .social-link { display: flex; align-items: center; justify-content: center; width: 4rem; height: 4rem; border: 1px solid hsla(188, 95%, 52%, 0.3); border-radius: 0.75rem; background: hsla(220, 30%, 8%, 0.5); backdrop-filter: blur(10px); color: var(--primary); text-decoration: none; transition: all 0.3s ease; }
+        .social-link:hover { border-color: var(--primary); box-shadow: 0 0 30px hsla(188, 95%, 52%, 0.3); transform: scale(1.1); }
+        .contact-info { padding: 2rem; border: 1px solid hsla(188, 95%, 52%, 0.3); border-radius: 0.75rem; background: hsla(220, 30%, 8%, 0.5); backdrop-filter: blur(10px); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; font-family: 'Courier New', monospace; font-size: 0.875rem; }
+        .contact-info-item div:first-child { color: var(--muted-foreground); margin-bottom: 0.25rem; }
+        .contact-info-item div:last-child { color: var(--primary); font-size: 1.125rem; font-weight: 700; }
+        footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; font-family: 'Courier New', monospace; font-size: 0.875rem; color: var(--muted-foreground); }
+        .footer-status { display: flex; align-items: center; gap: 0.5rem; color: var(--primary); }
+        @media (max-width: 768px) {
+            section { padding: 4rem 1rem; }
+            .hero-corner-top-left, .hero-corner-top-right, .hero-corner-bottom { font-size: 0.75rem; }
+            .timeline::before { left: 1rem; }
+            .timeline-dot { left: 0.65rem; }
+            .timeline-item { padding-left: 3rem; }
+        }
+        .text-center { text-align: center; }
+        .text-primary { color: var(--primary); }
+        .text-secondary { color: var(--secondary); }
+        .transition { transition: all 0.7s ease; }
+    </style>
+</head>
+<body>
+    <canvas id="particleCanvas"></canvas>
+    
+    <section class="hero hud-grid scan-line">
+        <div class="hero-corner-top-left animate-slide-in">
+            <div style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary); margin-bottom: 0.5rem;">
+                <div class="status-dot animate-pulse-glow"></div>
+                <span class="text-glow">SYSTEM ONLINE</span>
+            </div>
+            <div style="color: var(--muted-foreground); font-size: 0.75rem;">ID: PRO-2024-ALPHA</div>
+        </div>
+        <div class="hero-corner-top-right animate-slide-in">
+            <div style="color: var(--primary); margin-bottom: 0.5rem;" class="text-glow">PROFILE v3.2</div>
+            <div style="color: var(--muted-foreground); font-size: 0.75rem;">Oct 29, 2025</div>
+        </div>
+        <div style="position: relative; z-index: 10; text-align: center; padding: 0 1.5rem;">
+            <div class="badge"><span class="text-glow">◆ PROFESSIONAL PROFILE ◆</span></div>
+            <h1 class="text-glow">ELITE DEVELOPER</h1>
+            <p class="subtitle">Architect of <span class="text-primary">Digital Solutions</span> | Master of <span class="text-secondary">Innovation</span></p>
+            <div class="info-pills">
+                <div class="pill"><span>LOCATION:</span><span>Global</span></div>
+                <div class="pill"><span>STATUS:</span><span>Available</span></div>
+                <div class="pill"><span>EXPERTISE:</span><span>Full-Stack</span></div>
+            </div>
+        </div>
+        <div class="hero-corner-bottom">
+            <div style="margin-bottom: 0.5rem;">SCROLL TO EXPLORE</div>
+            <div class="text-primary animate-bounce">▼</div>
+        </div>
+    </section>
+
+    <section class="hud-grid scan-line">
+        <div class="container">
+            <div class="text-center">
+                <div class="badge"><span class="text-glow">◆ PERFORMANCE METRICS ◆</span></div>
+                <h2 class="text-glow">Impact by the Numbers</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value"><span class="counter" data-target="150">0</span>+</div>
+                    <div class="stat-label">PROJECTS COMPLETED</div>
+                    <div class="progress-bar"><div class="progress-fill" data-progress="100"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value"><span class="counter" data-target="50">0</span>+</div>
+                    <div class="stat-label">SATISFIED CLIENTS</div>
+                    <div class="progress-bar"><div class="progress-fill" data-progress="100"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value"><span class="counter" data-target="99">0</span>%</div>
+                    <div class="stat-label">CODE QUALITY</div>
+                    <div class="progress-bar"><div class="progress-fill" data-progress="99"></div></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value"><span class="counter" data-target="24">0</span>/7</div>
+                    <div class="stat-label">SYSTEM UPTIME</div>
+                    <div class="progress-bar"><div class="progress-fill" data-progress="100"></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hud-grid scan-line">
+        <div class="container">
+            <div class="text-center">
+                <div class="badge"><span class="text-glow">◆ TECHNICAL EXPERTISE ◆</span></div>
+                <h2 class="text-glow">Skills Matrix</h2>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Frontend Development</h3>
+                        </div>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar"><div class="skill-progress-fill" data-progress="95"></div></div>
+                        <div class="skill-percent">95%</div>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">React</span>
+                        <span class="tech-tag">TypeScript</span>
+                        <span class="tech-tag">Next.js</span>
+                        <span class="tech-tag">Tailwind</span>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Backend Development</h3>
+                        </div>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar"><div class="skill-progress-fill" data-progress="90"></div></div>
+                        <div class="skill-percent">90%</div>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Node.js</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">Redis</span>
+                        <span class="tech-tag">GraphQL</span>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>System Architecture</h3>
+                        </div>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar"><div class="skill-progress-fill" data-progress="88"></div></div>
+                        <div class="skill-percent">88%</div>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">AWS</span>
+                        <span class="tech-tag">Docker</span>
+                        <span class="tech-tag">Kubernetes</span>
+                        <span class="tech-tag">Microservices</span>
+                    </div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-header">
+                        <div class="skill-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                        <div style="flex: 1;">
+                            <h3>Performance Optimization</h3>
+                        </div>
+                    </div>
+                    <div class="skill-progress">
+                        <div class="skill-progress-bar"><div class="skill-progress-fill" data-progress="92"></div></div>
+                        <div class="skill-percent">92%</div>
+                    </div>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Caching</span>
+                        <span class="tech-tag">CDN</span>
+                        <span class="tech-tag">Web Vitals</span>
+                        <span class="tech-tag">Monitoring</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hud-grid scan-line">
+        <div class="container">
+            <div class="text-center">
+                <div class="badge"><span class="text-glow">◆ CAREER PATH ◆</span></div>
+                <h2 class="text-glow">Professional Journey</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="exp-card">
+                        <div class="exp-year">2023 - PRESENT</div>
+                        <h3>Lead Full-Stack Engineer</h3>
+                        <div class="exp-company">TechCorp Innovations</div>
+                        <p class="exp-description">Leading development of enterprise-scale applications, mentoring junior developers, and architecting cloud-native solutions.</p>
+                        <ul class="achievements">
+                            <li>Architected microservices infrastructure serving 1M+ users</li>
+                            <li>Reduced system latency by 60% through optimization</li>
+                            <li>Led team of 8 developers in agile environment</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="exp-card">
+                        <div class="exp-year">2021 - 2023</div>
+                        <h3>Senior Software Engineer</h3>
+                        <div class="exp-company">Digital Solutions Inc</div>
+                        <p class="exp-description">Developed high-performance web applications and implemented CI/CD pipelines for automated deployments.</p>
+                        <ul class="achievements">
+                            <li>Built real-time analytics dashboard processing 100K events/sec</li>
+                            <li>Implemented automated testing reducing bugs by 75%</li>
+                            <li>Improved deployment frequency from weekly to daily</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="exp-card">
+                        <div class="exp-year">2019 - 2021</div>
+                        <h3>Full-Stack Developer</h3>
+                        <div class="exp-company">StartupHub</div>
+                        <p class="exp-description">Built MVPs and production applications for multiple startups, focusing on rapid development and scalability.</p>
+                        <ul class="achievements">
+                            <li>Launched 5+ successful products from concept to production</li>
+                            <li>Established coding standards and best practices</li>
+                            <li>Integrated payment systems and third-party APIs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hud-grid scan-line">
+        <div class="container">
+            <div class="text-center">
+                <div class="badge"><span class="text-glow">◆ FEATURED WORK ◆</span></div>
+                <h2 class="text-glow">Project Portfolio</h2>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-status">
+                        <div class="status-badge">
+                            <div class="status-dot animate-pulse-glow"></div>
+                            <span>PRODUCTION</span>
+                        </div>
+                    </div>
+                    <h3>Cloud Analytics Platform</h3>
+                    <p class="project-description">Real-time data processing and visualization platform handling millions of events per day with sub-second latency.</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">React</span>
+                        <span class="tech-tag">Node.js</span>
+                        <span class="tech-tag">PostgreSQL</span>
+                        <span class="tech-tag">Redis</span>
+                    </div>
+                    <div class="project-impact">
+                        <span>IMPACT: </span>
+                        <span>Processing 5M+ events daily</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-status">
+                        <div class="status-badge">
+                            <div class="status-dot animate-pulse-glow"></div>
+                            <span>PRODUCTION</span>
+                        </div>
+                    </div>
+                    <h3>E-Commerce Ecosystem</h3>
+                    <p class="project-description">Full-featured e-commerce platform with inventory management, payment processing, and real-time order tracking.</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Next.js</span>
+                        <span class="tech-tag">Stripe</span>
+                        <span class="tech-tag">GraphQL</span>
+                        <span class="tech-tag">AWS</span>
+                    </div>
+                    <div class="project-impact">
+                        <span>IMPACT: </span>
+                        <span>$2M+ in transactions processed</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-status">
+                        <div class="status-badge">
+                            <div class="status-dot animate-pulse-glow"></div>
+                            <span>ACTIVE</span>
+                        </div>
+                    </div>
+                    <h3>DevOps Automation Suite</h3>
+                    <p class="project-description">Comprehensive CI/CD pipeline and infrastructure automation tools for streamlined deployment workflows.</p>
+                    <div class="tech-tags">
+                        <span class="tech-tag">Docker</span>
+                        <span class="tech-tag">Kubernetes</span>
+                        <span class="tech-tag">Terraform</span>
+                        <span class="tech-tag">GitHub Actions</span>
+                    </div>
+                    <div class="project-impact">
+                        <span>IMPACT: </span>
+                        <span>90% reduction in deployment time</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hud-grid scan-line">
+        <div class="contact-content">
+            <div class="badge"><span class="text-glow">◆ ESTABLISH CONNECTION ◆</span></div>
+            <h2 class="text-glow">Let's Build Something<br><span class="text-secondary">Extraordinary</span></h2>
+            <p class="subtitle" style="margin-bottom: 3rem;">Open to collaborations, freelance projects, and full-time opportunities.<br>Let's create the future together.</p>
+            <div class="social-links">
+                <a href="mailto:contact@example.com" class="social-link" aria-label="Email">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                </a>
+                <a href="https://github.com" class="social-link" aria-label="GitHub">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+                </a>
+                <a href="https://linkedin.com" class="social-link" aria-label="LinkedIn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+                <a href="https://twitter.com" class="social-link" aria-label="Twitter">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
+                </a>
+            </div>
+            <div class="contact-info">
+                <div class="contact-info-item">
+                    <div>RESPONSE TIME</div>
+                    <div>&lt; 24 Hours</div>
+                </div>
+                <div class="contact-info-item">
+                    <div>AVAILABILITY</div>
+                    <div>Immediate</div>
+                </div>
+                <div class="contact-info-item">
+                    <div>TIME ZONE</div>
+                    <div>Global</div>
+                </div>
+            </div>
+            <footer>
+                <div>© 2024 Elite Developer. All systems operational.</div>
+                <div class="footer-status">
+                    <div class="status-dot animate-pulse-glow"></div>
+                    <span>ONLINE</span>
+                </div>
+            </footer>
+        </div>
+    </section>
+
+    <script>
+        // Particle background animation
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const particles = [];
+        for (let i = 0; i < 100; i++) {
+            particles.push({x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2 + 1, speedX: (Math.random() - 0.5) * 0.5, speedY: (Math.random() - 0.5) * 0.5, opacity: Math.random() * 0.5 + 0.2});
+        }
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.x += p.speedX; p.y += p.speedY;
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(188, 95%, 52%, ${p.opacity})`; ctx.fill();
+                particles.forEach((o, j) => {
+                    if (i === j) return;
+                    const dx = p.x - o.x, dy = p.y - o.y, d = Math.sqrt(dx * dx + dy * dy);
+                    if (d < 100) {
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(o.x, o.y);
+                        ctx.strokeStyle = `hsla(188, 95%, 52%, ${0.15 * (1 - d / 100)})`; ctx.lineWidth = 0.5; ctx.stroke();
+                    }
+                });
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        // Counter animation
+        const observerOptions = { threshold: 0.5, rootMargin: '0px' };
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    const duration = 2000;
+                    const increment = target / (duration / 16);
+                    let current = 0;
+                    const timer = setInterval(() => {
+                        current += increment;
+                        if (current >= target) {
+                            counter.textContent = target;
+                            clearInterval(timer);
+                        } else {
+                            counter.textContent = Math.floor(current);
+                        }
+                    }, 16);
+                    counterObserver.unobserve(counter);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.counter').forEach(counter => counterObserver.observe(counter));
+
+        // Progress bar animation
+        const progressObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const fill = entry.target.querySelector('.progress-fill, .skill-progress-fill');
+                    if (fill) {
+                        const progress = fill.getAttribute('data-progress');
+                        fill.style.width = progress + '%';
+                        progressObserver.unobserve(entry.target);
+                    }
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.progress-bar, .skill-progress-bar').forEach(bar => progressObserver.observe(bar.parentElement));
+    </script>
+</body>
+</html>

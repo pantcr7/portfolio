@@ -1222,3 +1222,32 @@ section .container {
 .credits a:hover {
   color: #fff;
 }
+
+.corner-text {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  font-size: clamp(12px, 1.2vw, 13px);
+  color: #ffffff;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 6px rgba(255,255,255,0.9);
+  background: transparent;
+  padding: 6px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+.corner-text a {
+  color: #ffffff;
+  text-decoration: none;
+}
+.corner-text a:hover {
+  color: #00ffff;
+}
+
+/* Make sure the layout stays good on very small screens */
+@media (max-width:420px){
+.neon{font-size:18vw}
+.corner-text{right:12px;bottom:12px}
+}
